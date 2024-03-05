@@ -1,22 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerActionController : MonoBehaviour
 {
 
     bool isJumping = false;
+    bool isSprinting = false;
 
     float inputHorizontal;
     float inputVertical;
     bool inputJump;
+    bool inputAttack;
+    bool inputSprint;
 
     public float jumpForce = 10f;
     public float jumpTime = 1.5f;
     public float velocity = 5f;
+    public float sprintAdittion = 2f;
     public float gravity = 9.8f;
 
-    PlayerState playerState;
+    public float headHitDetect = 0.5f;
 
     Animator animator;
     CharacterController cc;
@@ -28,55 +33,60 @@ public class PlayerActionController : MonoBehaviour
     {
         cc = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
-        playerState = PlayerState.Grounded;
     }
 
     // Update is called once per frame
     void Update()
     {
+        
         inputHorizontal = Input.GetAxis("Horizontal");
         inputVertical = Input.GetAxis("Vertical");
-        inputJump = Input.GetKeyDown(KeyCode.Space);
+        inputJump = Input.GetAxis("Jump") == 1f;
+        inputAttack = Input.GetAxis("Fire1") == 1f;
+        inputSprint = Input.GetAxis("Fire3") == 1f;
 
-        if ( inputJump && cc.isGrounded )
+        if(cc.isGrounded)
+        {
+            animator.SetBool("run", cc.velocity.magnitude > 0.9f);
+
+            isSprinting = cc.velocity.magnitude > 0.9f && inputSprint;
+            animator.SetBool("sprint", isSprinting );
+        }
+
+
+        animator.SetBool("air", cc.isGrounded == false );
+        
+        if( inputJump && cc.isGrounded)
         {
             isJumping = true;
-            animator.SetTrigger("jump");
-            animator.SetBool("air", true);
-            //playerState = PlayerState.Jumping;
         }
-        else
-        {
-            animator.SetBool("run", inputHorizontal != 0 || inputVertical != 0);
-        }
+
+        HeadHittingDetect();
 
     }
 
     private void FixedUpdate()
     {
 
-        float directionX = inputHorizontal * velocity * Time.deltaTime;
-        float directionZ = inputVertical * velocity * Time.deltaTime;
+        float velocityAdittion = 0;
+        if (isSprinting)
+            velocityAdittion = sprintAdittion;
 
+        float directionX = inputHorizontal * (velocity + velocityAdittion) * Time.deltaTime;
+        float directionZ = inputVertical * (velocity + velocityAdittion) * Time.deltaTime;
         float directionY = 0;
-        if ( !isJumping && cc.isGrounded )
-        {
-            animator.SetBool("air", false);
-            jumpElapsedTime = 0;
-        }
-
+        
         if (isJumping)
         {
-            jumpElapsedTime += Time.deltaTime;
 
             directionY = Mathf.SmoothStep(jumpForce, jumpForce * 0.30f, jumpElapsedTime / jumpTime);
             directionY *= Time.deltaTime;
 
-            //directionY = jumpForce;
-
-            if(jumpElapsedTime >= jumpTime)
+            jumpElapsedTime += Time.deltaTime;
+            if (jumpElapsedTime >= jumpTime)
             {
                 isJumping = false;
+                jumpElapsedTime = 0;
             }
         }
 
@@ -99,7 +109,7 @@ public class PlayerActionController : MonoBehaviour
         {
             float angle = Mathf.Atan2(forward.x + right.x, forward.z + right.z) * Mathf.Rad2Deg;
             Quaternion rotation = Quaternion.Euler(0, angle, 0);
-            //transform.rotation = rotacao;
+            //transform.rotation = rotation;
             transform.rotation = Quaternion.Slerp(transform.rotation, rotation, 0.15f);
         }
 
@@ -108,6 +118,22 @@ public class PlayerActionController : MonoBehaviour
 
         Vector3 moviment = verticalDirection + horizontalDirection;
         cc.Move( moviment );
+    }
+
+    void HeadHittingDetect()
+    {
+        float headHitDistance = 1.1f;
+        Vector3 ccCenter = transform.TransformPoint(cc.center);
+        float hitCalc = cc.height / 2f * headHitDistance;
+
+        // Uncomment this line to see the Ray drawed in your characters head
+        // Debug.DrawRay(ccCenter, Vector3.up * headHeight, Color.red);
+
+        if (Physics.Raycast(ccCenter, Vector3.up, hitCalc))
+        {
+            jumpElapsedTime = 0;
+            isJumping = false;
+        }
     }
 
 }
