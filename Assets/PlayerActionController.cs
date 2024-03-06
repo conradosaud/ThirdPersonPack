@@ -8,6 +8,7 @@ public class PlayerActionController : MonoBehaviour
 
     bool isJumping = false;
     bool isSprinting = false;
+    bool isAttacking = false;
 
     float inputHorizontal;
     float inputVertical;
@@ -61,6 +62,12 @@ public class PlayerActionController : MonoBehaviour
             isJumping = true;
         }
 
+        if( inputAttack && ! isAttacking )
+        {
+            isAttacking = true;
+            animator.SetBool("attack", true);
+        }
+
         HeadHittingDetect();
 
     }
@@ -78,7 +85,6 @@ public class PlayerActionController : MonoBehaviour
         
         if (isJumping)
         {
-
             directionY = Mathf.SmoothStep(jumpForce, jumpForce * 0.30f, jumpElapsedTime / jumpTime);
             directionY *= Time.deltaTime;
 
@@ -88,6 +94,12 @@ public class PlayerActionController : MonoBehaviour
                 isJumping = false;
                 jumpElapsedTime = 0;
             }
+        }
+
+        if( animator.GetCurrentAnimatorStateInfo(0).IsName("Sword Slash") == false)
+        {
+            isAttacking = false;
+            animator.SetBool("attack", false);
         }
 
         directionY -= gravity * Time.deltaTime;
