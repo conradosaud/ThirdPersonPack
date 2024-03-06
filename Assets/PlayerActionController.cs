@@ -8,12 +8,12 @@ public class PlayerActionController : MonoBehaviour
 
     bool isJumping = false;
     bool isSprinting = false;
-    bool isAttacking = false;
+    bool isCrouching = false;
 
     float inputHorizontal;
     float inputVertical;
     bool inputJump;
-    bool inputAttack;
+    bool inputCrouch;
     bool inputSprint;
 
     public float jumpForce = 10f;
@@ -43,29 +43,32 @@ public class PlayerActionController : MonoBehaviour
         inputHorizontal = Input.GetAxis("Horizontal");
         inputVertical = Input.GetAxis("Vertical");
         inputJump = Input.GetAxis("Jump") == 1f;
-        inputAttack = Input.GetAxis("Fire1") == 1f;
         inputSprint = Input.GetAxis("Fire3") == 1f;
+
+        // pode ser adaptado para segurar
+        if (Input.GetKeyDown(KeyCode.LeftControl) || Input.GetKeyDown(KeyCode.JoystickButton1))
+        {
+            isCrouching = !isCrouching;
+        }
 
         if(cc.isGrounded)
         {
+
+            // Counching não diminui o tamanho do collider
+            animator.SetBool("crouch", isCrouching);
+
             animator.SetBool("run", cc.velocity.magnitude > 0.9f);
 
             isSprinting = cc.velocity.magnitude > 0.9f && inputSprint;
             animator.SetBool("sprint", isSprinting );
         }
 
-
         animator.SetBool("air", cc.isGrounded == false );
         
         if( inputJump && cc.isGrounded)
         {
             isJumping = true;
-        }
-
-        if( inputAttack && ! isAttacking )
-        {
-            isAttacking = true;
-            animator.SetBool("attack", true);
+            isCrouching = false;
         }
 
         HeadHittingDetect();
@@ -94,12 +97,6 @@ public class PlayerActionController : MonoBehaviour
                 isJumping = false;
                 jumpElapsedTime = 0;
             }
-        }
-
-        if( animator.GetCurrentAnimatorStateInfo(0).IsName("Sword Slash") == false)
-        {
-            isAttacking = false;
-            animator.SetBool("attack", false);
         }
 
         directionY -= gravity * Time.deltaTime;

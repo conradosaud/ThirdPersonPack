@@ -5,10 +5,10 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
 
-    public bool holdToMoveCamera = true;
+    public bool clickToMoveCamera = false;
     public float sensibility = 5f;
-    public float cameraTopLimit = -45;
-    public float cameraBottomLimit = -40f;
+
+    public Vector2 cameraLimit = new Vector2(-45, 40);
 
     Transform player;
     float offsetDistanceY;
@@ -19,7 +19,7 @@ public class CameraController : MonoBehaviour
     void Start()
     {
 
-        if(holdToMoveCamera == false)
+        if(clickToMoveCamera == false)
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
@@ -34,14 +34,14 @@ public class CameraController : MonoBehaviour
 
         transform.position = player.position + new Vector3(0, offsetDistanceY, 0);
 
-        if(holdToMoveCamera == true )
+        if(clickToMoveCamera == true )
             if (Input.GetAxisRaw("Fire2") == 0)
                 return;
 
         mouseX += Input.GetAxis("Mouse X") * sensibility;
         mouseY += Input.GetAxis("Mouse Y") * sensibility;
 
-        mouseY = Mathf.Clamp(mouseY, cameraTopLimit, cameraBottomLimit);
+        mouseY = Mathf.Clamp(mouseY, cameraLimit.x, cameraLimit.y);
 
         transform.rotation = Quaternion.Euler(-mouseY, mouseX, 0);
 
