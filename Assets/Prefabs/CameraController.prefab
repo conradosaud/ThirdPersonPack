@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4504772651233487798}
-  - component: {fileID: 3409702170184395882}
+  - component: {fileID: 7947543393155850538}
   m_Layer: 0
   m_Name: CameraController
   m_TagString: Untagged
@@ -33,7 +33,7 @@ Transform:
   - {fileID: 9030538853541958529}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3409702170184395882
+--- !u!114 &7947543393155850538
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -42,11 +42,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1011312494259777056}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ae02162f69241e44973a78d776ef7c1, type: 3}
+  m_Script: {fileID: 11500000, guid: 78bfe315ac0ad9b4da8c8e1f992d6ccc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   clickToMoveCamera: 0
-  sensibility: 5
+  sensitivity: 5
   cameraLimit: {x: -45, y: 40}
 --- !u!1 &7815172744516068119
 GameObject:

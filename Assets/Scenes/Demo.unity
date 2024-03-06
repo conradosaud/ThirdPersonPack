@@ -5976,6 +5976,10 @@ PrefabInstance:
       value: CameraController
       objectReference: {fileID: 0}
     - target: {fileID: 3409702170184395882, guid: 0090731b51e488b43a6a7307adf4cfef, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3409702170184395882, guid: 0090731b51e488b43a6a7307adf4cfef, type: 3}
       propertyPath: clickToMoveCamera
       value: 0
       objectReference: {fileID: 0}
