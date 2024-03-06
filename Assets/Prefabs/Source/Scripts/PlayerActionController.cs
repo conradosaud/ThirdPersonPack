@@ -16,13 +16,12 @@ public class PlayerActionController : MonoBehaviour
     bool inputCrouch;
     bool inputSprint;
 
+    public float velocity = 5f;
     public float jumpForce = 10f;
     public float jumpTime = 1.5f;
-    public float velocity = 5f;
-    public float sprintAdittion = 2f;
+    public float sprintAdittion = 3.5f;
+    [Space]
     public float gravity = 9.8f;
-
-    public float headHitDetect = 0.5f;
 
     Animator animator;
     CharacterController cc;
@@ -44,9 +43,10 @@ public class PlayerActionController : MonoBehaviour
         inputVertical = Input.GetAxis("Vertical");
         inputJump = Input.GetAxis("Jump") == 1f;
         inputSprint = Input.GetAxis("Fire3") == 1f;
+        inputCrouch = Input.GetKeyDown(KeyCode.LeftControl) || Input.GetKeyDown(KeyCode.JoystickButton1);
 
         // pode ser adaptado para segurar
-        if (Input.GetKeyDown(KeyCode.LeftControl) || Input.GetKeyDown(KeyCode.JoystickButton1))
+        if ( inputCrouch )
         {
             isCrouching = !isCrouching;
         }
