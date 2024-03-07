@@ -102,7 +102,8 @@ public class ThirdPersonController : MonoBehaviour
         if ( inputJump && cc.isGrounded )
         {
             isJumping = true;
-            isCrouching = false;
+            // Disable crounching when jumping
+            //isCrouching = false; 
         }
 
         HeadHittingDetect();
@@ -114,10 +115,12 @@ public class ThirdPersonController : MonoBehaviour
     private void FixedUpdate()
     {
 
-        // Sprinting velocity boost
+        // Sprinting velocity boost or crounching desacelerate
         float velocityAdittion = 0;
         if ( isSprinting )
             velocityAdittion = sprintAdittion;
+        if (isCrouching)
+            velocityAdittion =  - (velocity * 0.50f); // -50% velocity
 
         // Direction movement
         float directionX = inputHorizontal * (velocity + velocityAdittion) * Time.deltaTime;

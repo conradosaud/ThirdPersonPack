@@ -138,7 +138,8 @@ public class CommentedThirdPersonController : MonoBehaviour
         if ( inputJump && cc.isGrounded )
         {
             isJumping = true;
-            isCrouching = false;
+            // Disable crounching when jumping? You decide:
+            // isCrouching = false;
         }
 
         // It's at the end of the code. Leave it for later.
@@ -151,11 +152,16 @@ public class CommentedThirdPersonController : MonoBehaviour
     private void FixedUpdate()
     {
 
-        // This block checks if the player is sprinting, because if he is, it will add a speed boost to his movement
+        // Checks if the player is sprinting, because if he is, it will add a speed boost to his movement
         float velocityAdittion = 0;
         if ( isSprinting )
         {
             velocityAdittion = sprintAdittion;
+        }
+        // Checks if the player is couching, because if he is, it will add a speed debuff
+        if (isCrouching)
+        {
+            velocityAdittion = - (velocity * 0.50f); // -50% velocity
         }
 
         // Let's use the player's inputs to tell us if he moved to either side
