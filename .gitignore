@@ -1,3 +1,10 @@
+# Add after submited to Asset Store
+Logs/
+obj/
+ProjectSettings/
+Temp/
+UserSettings/
+
 # This .gitignore file should be placed at the root of your Unity project directory
 #
 # Get latest from https://github.com/github/gitignore/blob/main/Unity.gitignore
