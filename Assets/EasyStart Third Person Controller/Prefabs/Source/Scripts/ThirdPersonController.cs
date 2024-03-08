@@ -1,14 +1,5 @@
-﻿using NUnit.Framework;
-using NUnit.Framework.Internal;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using Unity.Android.Gradle.Manifest;
-using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
-using UnityEditor.Presets;
+﻿
 using UnityEngine;
-using UnityEngine.TextCore.Text;
 
 /*
     This file has a commented version with details about how each line works. 

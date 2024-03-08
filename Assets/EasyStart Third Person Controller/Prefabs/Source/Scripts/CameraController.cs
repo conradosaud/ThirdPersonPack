@@ -1,10 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Xml.Linq;
-using Unity.VisualScripting;
+﻿
 using UnityEngine;
-using UnityEngine.TextCore.Text;
-using UnityEngine.UIElements;
 
 /*
     This file has a commented version with details about how each line works. 

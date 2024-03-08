@@ -1,10 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Xml.Linq;
-using Unity.VisualScripting;
+﻿
 using UnityEngine;
-using UnityEngine.TextCore.Text;
-using UnityEngine.UIElements;
 
 /// <summary>
 /// Camera movement script for third person games.
@@ -58,7 +53,7 @@ public class CommentedCameraController : MonoBehaviour
     void Update()
     {
         // Makes the camera position the same as the player's with a defined offset setback
-        // This way, the camera will follow you, but maintaining the minimum offset.
+        // This way, the camera will follow you, but maintaining the minimum offset
         transform.position = player.position + new Vector3(0, offsetDistanceY, 0);
 
         // If the option to move camera with button is enabled

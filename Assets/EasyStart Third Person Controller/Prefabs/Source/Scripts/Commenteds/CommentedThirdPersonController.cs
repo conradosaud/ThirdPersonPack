@@ -1,17 +1,5 @@
-﻿using NUnit.Framework;
-using NUnit.Framework.Internal;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using Unity.VisualScripting;
-using UnityEditor.Presets;
+﻿
 using UnityEngine;
-using UnityEngine.TextCore.Text;
-
-/*
-    You are lost? Read the Tutorial.pdf file from this pack. There is a lot of information there. 
-*/
-
 
 /// <summary>
 /// Main script for third-person movement of the character in the game.
@@ -20,6 +8,8 @@ using UnityEngine.TextCore.Text;
 /// </summary>
 public class CommentedThirdPersonController : MonoBehaviour
 {
+
+    // Public control variables of this script
 
     [Tooltip("Speed ​​at which the character moves. It is not affected by gravity or jumping.")]
     public float velocity = 5f;
@@ -69,7 +59,7 @@ public class CommentedThirdPersonController : MonoBehaviour
     {
 
         // Check which input is being pressed
-        // Read the Tutorial.pdf for a detailed explanation
+        // Read the end of this script for a detailed explanation.
         inputHorizontal = Input.GetAxis("Horizontal");
         inputVertical = Input.GetAxis("Vertical");
         inputJump = Input.GetAxis("Jump") == 1f;
@@ -77,7 +67,7 @@ public class CommentedThirdPersonController : MonoBehaviour
         // Unfortunately GetAxis does not work with GetKeyDown, so inputs must be taken individually
         inputCrouch = Input.GetKeyDown(KeyCode.LeftControl) || Input.GetKeyDown(KeyCode.JoystickButton1);
 
-        // Check if you pressed the crouch input key and change the player's state.
+        // Check if you pressed the crouch input key and change the player's state. Read at the end of the script.
         // Note: It is possible to make changes to keep player crouched only while the key is pressed
         if ( inputCrouch == true )
         {
@@ -109,7 +99,7 @@ public class CommentedThirdPersonController : MonoBehaviour
                 animator.SetBool( "run", false );
             }
 
-            // Same logic as the race, but adding the sprint input condition
+            // Same logic as the run, but adding the sprint input condition
             if ( cc.velocity.magnitude > 0.9f && inputSprint )
             {
                 isSprinting = true;
@@ -138,7 +128,7 @@ public class CommentedThirdPersonController : MonoBehaviour
         if ( inputJump && cc.isGrounded )
         {
             isJumping = true;
-            // Disable crounching when jumping? You decide:
+            // Disable crounching when jumping? You decide, just uncomment:
             // isCrouching = false;
         }
 
@@ -166,7 +156,7 @@ public class CommentedThirdPersonController : MonoBehaviour
 
         // Let's use the player's inputs to tell us if he moved to either side
         // And if it moved, let's make it faster by multiplying by speed and reducing by Time.DeltaTime
-        // More explanations in Tutorial.pdf
+        // More explanations in the end
         float directionX = inputHorizontal * (velocity + velocityAdittion) * Time.deltaTime;
         float directionZ = inputVertical * (velocity + velocityAdittion) * Time.deltaTime;
         // The Y position is the upward movement, and as our character doesn't fly, he just stays at zero :)
@@ -265,3 +255,94 @@ public class CommentedThirdPersonController : MonoBehaviour
     }
 
 }
+
+/*
+ 
+    DETAILED EXPLANATIONS:
+
+    1 - What is GetAXIS e why "Vertical/Horizontal" instead get keys W, A, S and D?
+
+By using Input.GetAxis, you're abstracting player input to a single action regardless of the input device.
+This means that if a player is using a gamepad instead of a keyboard, the same action
+(moving forward, backward, sideways) can be mapped to the left and right analog sticks instead of specific keys.
+
+Learn more: https://learn.unity.com/tutorial/getaxis-o
+
+It's worth remembering that we have other options besides Axis.
+In 2019, Unity introduced a new input mapping system (which this pack does not use).
+You can learn about it here:
+https://gamedevbeginner.com/input-in-unity-made-easy-complete-guide-to-the-new-system/
+ 
+
+    2 - Changing the player's collision size when crouching
+
+As mentioned earlier, the player's collision remains the same when standing or crouching.
+You can test this by crouching your character and opening the game scene to notice that the collider
+remains exactly the same size, as the only thing that changed was the animation, and nothing else.
+
+There are two simple ways to solve this that I recommend:
+1 - Changing the collider height through code. You can access it like this: cc.height = 1.3f;
+Replace the value with the size you want. But remember to return to the original size when standing up.
+2 - Adding a change in the collider's height through the animation itself.
+In the crouch animation, add a new Character Controller property and change its size.
+This is the best way to do it because the collider will only be reduced during this animation,
+and you don't have to worry about returning it to its original size afterward.
+
+
+    3 - Why use Time.deltaTime in FixedUpdate?
+
+FixedUpdate, unlike Update, does not require the use of Time.deltaTime to adjust frames equally in all environments
+(
+if you still have doubts about how Time.deltaTime works, check:
+https://medium.com/star-gazers/understanding-time-deltatime-6528a8c2b5c8
+)
+
+However, deltaTime remains a great option for number reduction. This means that,
+so that we don't have to write very small numbers, we can reduce them using deltaTime.
+In the example on line 160 where we use it, it's for the simple reason that, if we didn't use it,
+the speed could never be set to 5 or 10. We would have to use values like 0.015f or 0.0087f
+and that's very hard to define and interpret.
+
+
+    4 - Stairs
+
+Test the game's stairs. The Character Controller has a "step" option, which is how large an obstacle
+in the environment can be for the player to pass over it, like a step of a staircase or rough terrain.
+This works well, however, when descending the stairs, the player ends up executing 
+the "fall" animation because at some points he ends up leaving the ground.
+
+There are a few ways to solve this:
+- One is to define wider and longer steps
+- Another way is to add an "invisible ramp" as collision for the stairs
+- You also have the option to detect if the player is colliding with stairs and not execute the falling animation
+ 
+
+    5 - Animations
+
+In order to provide a simple third-person movement script, the animations followed the same purpose.
+All animations were done using only booleans.
+For player movement, it's good to try using Blend Trees to interpolate between a frame
+of a short step and a long step. The same goes for jumps and other activities.
+You can learn more about how this can be done at the link below:
+https://www.youtube.com/watch?v=iFe_jCkMEV0
+
+
+    6 - Modularization
+
+If your game is going to contain more actions than this package, such as
+attacking, defending, dodging, picking up items, etc., can you imagine how big this code would get? 
+That's right. That's why it's important to modularize your game scripts.
+
+Modularizing means breaking down a large script into smaller parts that are responsible for only one thing,
+but all communicate with each other, like a system made up of several modules.
+You can do this simply using functions.
+
+- You can have a function called SetAnimationState() that encompasses all animation codes from Update
+- A function called JumpHandler() with all the code contained in the jump condition from line 166
+
+That's exactly what I did with the HeadHittingDetect() function.
+Try training your programming logic by modularizing the scripts in this package.
+
+Rate this asset in Unity Asset Store! It's free XD
+ 
+*/
