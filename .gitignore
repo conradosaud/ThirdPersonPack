@@ -4,6 +4,7 @@ obj/
 ProjectSettings/
 Temp/
 UserSettings/
+Packages/com.unity.asset-store-tools/*
 
 # This .gitignore file should be placed at the root of your Unity project directory
 #
