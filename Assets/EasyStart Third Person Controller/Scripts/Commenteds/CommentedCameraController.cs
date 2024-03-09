@@ -11,6 +11,9 @@ public class CommentedCameraController : MonoBehaviour
 
     [Tooltip("Enable to move the camera by holding the right mouse button. Does not work with joysticks (keep false).")]
     public bool clickToMoveCamera = false;
+    [Tooltip("Enable zoom in/out when scrolling the mouse wheel. Does not work with joysticks.")]
+    public bool canZoom = true;
+    [Space]
     [Tooltip("The higher it is, the faster the camera moves. It is recommended to increase this value for games that uses joystick.")]
     public float sensitivity = 5f;
 
@@ -55,6 +58,13 @@ public class CommentedCameraController : MonoBehaviour
         // Makes the camera position the same as the player's with a defined offset setback
         // This way, the camera will follow you, but maintaining the minimum offset
         transform.position = player.position + new Vector3(0, offsetDistanceY, 0);
+
+        // If the camera zoom is enabled, set camera zoom when mouse wheel is scrolled
+        if (canZoom && Input.GetAxis("Mouse ScrollWheel") != 0)
+        {
+            // To zoom in or out, we can change the camera's transform, but it's easier to just set the field of view
+            Camera.main.fieldOfView -= Input.GetAxis("Mouse ScrollWheel") * sensitivity * 2;
+        }
 
         // If the option to move camera with button is enabled
         if (clickToMoveCamera == true)
