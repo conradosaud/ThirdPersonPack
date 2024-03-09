@@ -1,4 +1,5 @@
 ﻿
+using UnityEditor.VersionControl;
 using UnityEngine;
 
 /*
@@ -49,6 +50,10 @@ public class ThirdPersonController : MonoBehaviour
     {
         cc = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
+
+        // Message informing the user that they forgot to add an animator
+        if (animator == null)
+            Debug.LogWarning("Hey buddy, you don't have the Animator component in your player. Without it, the animations won't work.");
     }
 
 
@@ -69,7 +74,8 @@ public class ThirdPersonController : MonoBehaviour
             isCrouching = !isCrouching;
 
         // Run and Crouch animation
-        if ( cc.isGrounded )
+        // If dont have animator component, this block wont run
+        if ( cc.isGrounded && animator != null )
         {
 
             // Crouch
@@ -87,7 +93,8 @@ public class ThirdPersonController : MonoBehaviour
         }
 
         // Jump animation
-        animator.SetBool("air", cc.isGrounded == false );
+        if( animator != null )
+            animator.SetBool("air", cc.isGrounded == false );
 
         // Handle can jump or not
         if ( inputJump && cc.isGrounded )
